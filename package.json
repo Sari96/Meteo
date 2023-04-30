@@ -1,15 +1,28 @@
 {
   "name": "meteo",
   "version": "1.0.0",
-  "description": "",
-  "main": "scripts.html",
+  "description": "Meteo",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel index.html",
+    "build": "parcel build index.html --public-url .",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sari96/Meteo.git"
   },
   "author": "Sarah Cappelli",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sari96/Meteo/issues"
+  },
+  "homepage": "https://github.com/Sari96/Meteo#readme",
   "dependencies": {
     "gh-pages": "^5.0.0",
     "parcel": "^2.8.3"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.8.3"
   }
 }

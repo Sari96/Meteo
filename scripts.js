@@ -4,7 +4,7 @@ let values, dateRangeElement, dateElement, iconElement, dateBarElement;
 let startDateIndex;
 
 const loadData = (lat, lng) => {
-  const url = `http://api.openweathermap.org/data/2.5/forecast?id=524901&lat=${lat}&lon=${lng}&appid=ca0bc81789a77b485742ed7b77c9a1b9`;
+  const url = `https://api.openweathermap.org/data/2.5/forecast?id=524901&lat=${lat}&lon=${lng}&appid=ca0bc81789a77b485742ed7b77c9a1b9`;
   console.log(url);
   fetch(url)
   .then((response) => response.json())

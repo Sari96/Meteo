@@ -1,0 +1,24 @@
+ul#weather li{
+  padding: 0;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+  list-style-type: none;
+  text-align: center;
+
+  img.icon{
+    width: 10%;
+  }
+
+  .date{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
+
+  .text{
+    font-weight: bold;
+  }
+}
+
+#series2{
+  color: rgb(28, 255, 130);
+}
