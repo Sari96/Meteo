@@ -1,24 +1,83 @@
-ul#weather li{
-  padding: 0;
-  margin: 0;
-  align-items: center;
-  justify-content: center;
-  list-style-type: none;
+%glass {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12.4px);
+  -webkit-backdrop-filter: blur(12.4px);
+}
+
+body {
+  background-image: linear-gradient(to bottom left, #91BEF3, #713FFD);
+  background-repeat: no-repeat;
+  color: white;
+}
+
+#dateBar {
+  .card {
+    @extend %glass;
+    text-align: center;
+    top: auto;
+    height: 100%;
+
+    &.selected {
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    img {
+      width: 5vw;
+      height: 10vh;
+    }
+
+    .card-title.day {
+      text-transform: capitalize;
+    }
+  }
+}
+
+#weather {
+  :first-child .card {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+
+  #main-weather {
+    @extend %glass;
+  }
+}
+
+
+#daily-info, #hourlyWeather {
+  @extend %glass;
   text-align: center;
-
-  img.icon{
-    width: 10%;
-  }
-
-  .date{
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-  }
-
-  .text{
-    font-weight: bold;
-  }
 }
 
-#series2{
-  color: rgb(28, 255, 130);
+#hourlyWeather {
+  @extend %glass;
+  overflow-x: scroll;
 }
+
+// ul#weather li{
+//   padding: 0;
+//   margin: 0;
+//   align-items: center;
+//   justify-content: center;
+//   list-style-type: none;
+//   text-align: center;
+
+//   img.icon{
+//     width: 10%;
+//   }
+
+//   .date{
+//     font-family: Verdana, Geneva, Tahoma, sans-serif;
+//   }
+
+//   .text{
+//     font-weight: bold;
+//   }
+// }
+
+// #series2{
+//   color: rgb(28, 255, 130);
+// }
