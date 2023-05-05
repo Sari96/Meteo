@@ -48,7 +48,7 @@ const loadDailyData = () => {
         <input type="radio" class="btn-check" name="btnradio" id="btnradio-${date.getDate()}" autocomplete="off" onclick="setWeatherDate(${index})">
         <div class="card d-flex flex-column justify-content-between">
           <div class="card-body">
-            <h5 class="card-title">${temp}° C</h5>
+            <h5 class="card-title">${temp} °C</h5>
             <img src="${svg}"/>
             <h5 class="card-title day">${date.toLocaleDateString('it-IT', {weekday: 'short'})}</h5>
           </div>
@@ -87,8 +87,8 @@ const setWeatherDate = (dateIdx) => {
   const dateString = date.toLocaleDateString('it-IT', {year: "numeric"}) + "-" + date.toLocaleDateString('it-IT', {month: "2-digit"}) + "-" + date.toLocaleDateString('it-IT', {day: "2-digit"});
   $("#sunrise").html(`${new Date(dailyValues.daily.sunrise[dateIndex]).toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}`);
   $("#sunset").html(`${new Date(dailyValues.daily.sunset[dateIndex]).toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}`);
-  $("#temp_min").html(`${dailyValues.daily.temperature_2m_min[dateIndex]}° C`);
-  $("#temp_max").html(`${dailyValues.daily.temperature_2m_max[dateIndex]}° C`);
+  $("#temp_min").html(`${dailyValues.daily.temperature_2m_min[dateIndex]} °C`);
+  $("#temp_max").html(`${dailyValues.daily.temperature_2m_max[dateIndex]} °C`);
 
   let htmlHourlyWeather = '';
 
@@ -100,13 +100,13 @@ const setWeatherDate = (dateIdx) => {
       if (dateIdx == 0 && index == minIdx || dateIdx != 0 && date.getHours() == 10) {
         $("#main-weather").parent().css({"background-image": "url(resources/background_" + hourlyValues.hourly.is_day[index] + ".png)"});
         $("#main-weather").html(`
-            <div class="col-5">
-              <img src="${svg}" class="d-block">
-              <p class="card-text">${date.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})}</p>
+            <div class="col-5 text-center d-flex flex-column justify-content-evenly">
+              <img src="${svg}">
+              <h5 class="card-title">${date.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})}</h5>
             </div>
-            <div class="col-7">
-              <h5 class="card-title">${hourlyValues.hourly.temperature_2m[index]}° C</h5>
-              <p class="card-text">${date.toLocaleDateString('it-IT', {day: 'numeric', month: "long", year: "numeric"})}</p>
+            <div class="col-7 d-flex flex-column justify-content-evenly">
+              <h5 class="card-title fs-1">${hourlyValues.hourly.temperature_2m[index]} °C</h5>
+              <p class="card-text fs-3">${date.toLocaleDateString('it-IT', {day: 'numeric', month: "long", year: "numeric"})}</p>
               <div class="row">
                 <div class="col-2">
                   <img src="resources/humidity.svg" class="d-block">
@@ -129,9 +129,9 @@ const setWeatherDate = (dateIdx) => {
       }
       htmlHourlyWeather = htmlHourlyWeather + `
         <div class="d-flex my-4 flex-column justify-content-between">
-          <p class="card-text">${date.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})}</p>
+          <p class="card-text fs-3">${date.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})}</p>
           <img src="${svg}" class="d-block">
-          <p class="card-text">${hourlyValues.hourly.temperature_2m[index]}° C</p>
+          <p class="card-text fs-3">${hourlyValues.hourly.temperature_2m[index]} °C</p>
         </div>
       `;
     }
