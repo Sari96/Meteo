@@ -8,7 +8,8 @@ const loadCity = (lat, lng) => {
   .then((response) => response.json())
   .then((data) => {
     $("h1").append(data[0].name);
-    loadDailyData(lat, lng);
+    loadHourlyData();
+    loadDailyData();
   });
 }
 
@@ -67,7 +68,7 @@ const loadDailyData = (lat, lng) => {
   });
 }
 
-const loadHourlyData = () => {
+const loadHourlyData = (lat,lng) => {
   const hourlyUrl = url + 'hourly=temperature_2m,relativehumidity_2m,apparent_temperature,windspeed_10m,winddirection_10m,precipitation,precipitation_probability,weathercode,is_day';
   console.log(hourlyUrl);
   fetch(hourlyUrl)
