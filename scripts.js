@@ -3,12 +3,11 @@ let url;
 let dateIndex;
 
 const loadCity = (lat, lng) => {
-  //url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&`;
-  fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&appid=ca0bc81789a77b485742ed7b77c9a1b9&limit=0`)
+  url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&`;
+  fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&appid=ca0bc81789a77b485742ed7b77c9a1b9&limit=0`)
   .then((response) => response.json())
   .then((data) => {
     $("h1").append(data[0].name);
-    loadHourlyData(lat, lng);
     loadDailyData(lat, lng);
   });
 }
@@ -33,7 +32,7 @@ const getWeatherImg = (code, is_day) => {
   return img = "resources/" + img + "_" + is_day + ".svg";
 }
 
-const loadDailyData = () => {
+const loadDailyData = (lat, lng) => {
   const dailyUrl = url + 'timezone=auto&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,weathercode,sunrise,sunset';
   console.log(dailyUrl);
   fetch(dailyUrl)
@@ -64,6 +63,7 @@ const loadDailyData = () => {
         </div>-->
       </label>`);
     });
+    loadHourlyData(lat, lng);
   });
 }
 
@@ -148,6 +148,5 @@ $(document).ready(() => {
     let lat = position.coords.latitude;
     let lng = position.coords.longitude;
     loadCity(lat, lng);
- 
   });
 });
