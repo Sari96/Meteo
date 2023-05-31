@@ -5,8 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "copy_resources": "cp -R ./resources ./dist",
-    "start": "npm copy_resources & parcel index.html",
-    "build": "npm copy_resources & parcel build index.html --public-url .",
+    "start": "npm run copy_resources & parcel index.html",
+    "build": "npm run copy_resources & parcel build index.html --public-url .",
     "deploy": "npm run build && gh-pages -d dist"
   },
   "repository": {
