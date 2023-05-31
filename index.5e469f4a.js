@@ -3,7 +3,7 @@ let url;
 let dateIndex;
 const loadCity = (lat, lng)=>{
     url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&`;
-    fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&appid=ca0bc81789a77b485742ed7b77c9a1b9&limit=0`).then((response)=>response.json()).then((data)=>{
+    fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&appid=ca0bc81789a77b485742ed7b77c9a1b9&limit=0`).then((response)=>response.json()).then((data)=>{
         $("h1").append(data[0].name);
         loadDailyData(lat, lng);
     });
