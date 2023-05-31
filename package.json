@@ -4,8 +4,9 @@
   "description": "Meteo",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel index.html",
-    "build": "parcel build index.html --public-url .",
+    "copy_resources": "cp -R ./resources ./dist/resources",
+    "start": "npm run copy_resources && parcel index.html",
+    "build": "npm run copy_resources && parcel build index.html --public-url .",
     "deploy": "npm run build && gh-pages -d dist"
   },
   "repository": {
