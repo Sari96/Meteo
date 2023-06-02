@@ -1,23 +1,32 @@
-<script setup>
-defineProps({
-  data: {
-    required: true,
-    type: Object
+<script>
+export default {
+  props: {
+    data: {
+      required: true,
+      type: Object
+    },
+    index: {
+      required: true,
+      type: Number
+    },
+    measures: {
+      required: true,
+      type: Object
+    },
   },
-  index: {
-    required: true,
-    type: Number
-  },
-  measures: {
-    required: true,
-    type: Object
+  methods: {
+    setWeatherDate() {
+      this.$emit('buttonClicked', this.index);
+    }
   }
-})
+}
+
 </script>
 
 <template>
 <label>
-  <input type="radio" class="btn-check" name="btnradio" :id="'btnradio-' + data.date.getDate()" autocomplete="off" :onclick="'setWeatherDate(' + index + ')'">
+  <input type="radio" class="btn-check" name="btnradio" :id="'btnradio-' + data.date.getDate()" autocomplete="off" @click="setWeatherDate">
+  <!-- <input type="radio" class="btn-check" name="btnradio" :id="'btnradio-' + data.date.getDate()" autocomplete="off" :onclick="'setWeatherDate(' + index + ')'"> -->
   <div class="card d-flex flex-column justify-content-between">
     <div class="card-body">
       <h5 class="card-title">{{data.temperature_2m_avg + ' ' + measures.apparent_temperature_max}}</h5>

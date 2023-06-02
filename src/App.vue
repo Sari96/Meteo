@@ -1,15 +1,18 @@
 <script>
 import DateButton from './components/DateButton.vue'
+import MainWeather from './components/MainWeather.vue'
 
 export default {
   data() {
     return {
       cityName: "",
       dailyData: {},
+      backgroundImageMainWeather: ""
     };
   },
   components: {
     DateButton,
+    MainWeather
   },
   methods: {
     getWeatherImg(code, is_day) {
@@ -64,8 +67,19 @@ export default {
         }));
         data.daily = tmp;
         this.dailyData = data;
-        //   const svg = ;
+
+
+
+
+        this.backgroundImageMainWeather = new URL('../images/background_0.png', import.meta.url).href;
       });
+    },
+
+    setWeatherDate(index) {
+      if (index % 2 == 0)
+        this.backgroundImageMainWeather = new URL('../images/background_0.png', import.meta.url).href;
+      else
+        this.backgroundImageMainWeather = new URL('../images/background_1.png', import.meta.url).href;
     }
   },
   beforeMount() {
@@ -85,10 +99,19 @@ export default {
       <h1 class="text-center">{{ cityName }}</h1>
       <div id="dateBar" class="my-5 card-group btn-group d-flex justify-content-evenly" role="group" aria-label="Basic radio toggle button group">
         <DateButton v-for="(item, index) in dailyData.daily"
-        :data="item"
-        :index="index"
-        :measures="dailyData.daily_units"
+          :data="item"
+          :index="index"
+          :measures="dailyData.daily_units"
+          @buttonClicked="setWeatherDate"
         />
+      </div>
+
+      <div id="weather" class="row">
+        <div class="col-12 col-md-8">
+          <MainWeather
+            :backgroundImage="backgroundImageMainWeather"
+          />
+        </div>
       </div>
     </div>
   </main>
