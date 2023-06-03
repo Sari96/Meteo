@@ -1,29 +1,55 @@
 <script setup>
 defineProps({
-  backgroundImage: {
+  data: {
     required: true,
-    type: String
-  }
+    type: Object
+  },
+  measures: {
+    required: true,
+    type: Object
+  },
+  index: {
+    required: true,
+    type: Number
+  },
 })
 </script>
 
 <template>
-  <div class="card h-100" :style="{ backgroundImage: `url(${backgroundImage})` }">
-    <div class="card-body row" id="main-weather">
-      aaaaaaaaaaaaaaaa
+  <div class="card h-100" :style="{backgroundImage: 'url(' + data[index].backgroundSvg + ')'}">
+    <div class="card-body row glass" id="main-weather">
+      <div class="col-5 text-center d-flex flex-column justify-content-evenly">
+        <img :src="data[index].svg">
+        <h5 class="card-title">{{data[index].date.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})}}</h5>
+      </div>
+      <div class="col-7 d-flex flex-column justify-content-evenly">
+        <h5 class="card-title fs-1">{{data[index].temperature_2m + " " + measures.temperature_2m}}</h5>
+        <p class="card-text fs-3">{{data[index].date.toLocaleDateString('it-IT', {day: 'numeric', month: "long", year: "numeric"})}}</p>
+        <div class="row">
+          <div class="col-2">
+            <img src="images/humidity.svg" class="d-block">
+          </div>
+          <div class="col-4">
+            <h5 class="card-title">Umidità</h5>
+            <p class="card-text">{{data[index].relativehumidity_2m + " " + measures.relativehumidity_2m}}</p>
+          </div>
+          <div class="col-2">
+            <img src="images/wind.svg" class="d-block">
+          </div>
+          <div class="col-4">
+            <h5 class="card-title">Vento</h5>
+            <p class="card-text">{{data[index].windspeed_10m + " " + measures.windspeed_10m}}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-@import '../assets/main';
+<style scoped>
 .card {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-}
-
-.card-body {
-  @extend %glass;
 }
 </style>

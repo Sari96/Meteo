@@ -1,18 +1,24 @@
 <script>
 import DateButton from './components/DateButton.vue'
 import MainWeather from './components/MainWeather.vue'
+import DailyInfo from './components/DailyInfo.vue'
+import HourlyWeather from './components/HourlyWeather.vue'
 
 export default {
   data() {
     return {
       cityName: "",
       dailyData: {},
-      backgroundImageMainWeather: ""
+      hourlyData: {},
+      selectedDateIndex: -1,
+      mainWeatherIndex: -1,
     };
   },
   components: {
     DateButton,
-    MainWeather
+    MainWeather,
+    DailyInfo,
+    HourlyWeather,
   },
   methods: {
     getWeatherImg(code, is_day) {
@@ -44,11 +50,11 @@ export default {
       .then((data) => {
         console.log(data);
         this.cityName = data[0].name;
-        this.loadDailyData(lat, lng);
+        this.loadDailyData();
       });
     },
 
-    loadDailyData(lat, lng) {
+    loadDailyData() {
       const dailyUrl = this.url + 'timezone=auto&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,weathercode,sunrise,sunset';
       console.log(dailyUrl);
       fetch(dailyUrl)
@@ -57,29 +63,68 @@ export default {
         const tmp = data.daily.time.map((time, index) => ({
           date: new Date(time),
           temperature_2m_avg: Math.round((data.daily.temperature_2m_max[index] + data.daily.temperature_2m_min[index]) / 2),
+          temperature_2m_min: data.daily.temperature_2m_min[index],
+          temperature_2m_max: data.daily.temperature_2m_max[index],
           //apparent_temperature_max: data.daily.apparent_temperature_max[index],
           //apparent_temperature_min: data.daily.apparent_temperature_min[index],
           //precipitation_sum: data.daily.precipitation_sum[index],
           //weathercode: data.daily.weathercode[index],
-          sunrise: data.daily.sunrise[index],
-          sunset: data.daily.sunset[index],
+          sunrise: new Date(data.daily.sunrise[index]),
+          sunset: new Date(data.daily.sunset[index]),
           svg: this.getWeatherImg(data.daily.weathercode[index], 1)
         }));
         data.daily = tmp;
         this.dailyData = data;
-
-
-
-
-        this.backgroundImageMainWeather = new URL('../images/background_0.png', import.meta.url).href;
+        this.loadHourlyData();
       });
     },
 
-    setWeatherDate(index) {
-      if (index % 2 == 0)
-        this.backgroundImageMainWeather = new URL('../images/background_0.png', import.meta.url).href;
-      else
-        this.backgroundImageMainWeather = new URL('../images/background_1.png', import.meta.url).href;
+    loadHourlyData() {
+      const hourlyUrl = this.url + 'hourly=temperature_2m,relativehumidity_2m,apparent_temperature,windspeed_10m,winddirection_10m,precipitation,precipitation_probability,weathercode,is_day';
+      console.log(hourlyUrl);
+      fetch(hourlyUrl)
+        .then((response) => response.json())
+        .then((data) => {
+          const tmp = data.hourly.time.map((time, index) => ({
+            time: time,
+            date: new Date(time),
+            apparent_temperature: data.hourly.apparent_temperature[index],
+            is_day: data.hourly.is_day[index],
+            precipitation: data.hourly.precipitation[index],
+            precipitation_probability: data.hourly.precipitation_probability[index],
+            relativehumidity_2m: data.hourly.relativehumidity_2m[index],
+            temperature_2m: data.hourly.temperature_2m[index],
+            time: data.hourly.time[index],
+            weathercode: data.hourly.weathercode[index],
+            winddirection_10m: data.hourly.winddirection_10m[index],
+            windspeed_10m: data.hourly.windspeed_10m[index],
+            svg: this.getWeatherImg(data.hourly.weathercode[index], data.hourly.is_day[index]),
+            backgroundSvg: new URL("../images/background_" + data.hourly.is_day[index] + ".png", import.meta.url).href,
+          }));
+          data.hourly = tmp;
+          this.hourlyData = data;
+          console.log(data);
+          this.setWeatherDate(0);
+      });
+    },
+
+    setWeatherDate(dateIdx) {
+      const now = new Date();
+      console.log(`Called setWeatherDate(${dateIdx})`);
+      this.selectedDateIndex = dateIdx;
+      let date = this.dailyData.daily[dateIdx].date;
+      // YYYY-MM-DD format
+      const dateString = this.dailyData.daily[dateIdx].date.toLocaleDateString('it-IT', {year: "numeric"}) + "-" + this.dailyData.daily[dateIdx].date.toLocaleDateString('it-IT', {month: "2-digit"}) + "-" + this.dailyData.daily[dateIdx].date.toLocaleDateString('it-IT', {day: "2-digit"});
+      this.hourlyData.hourly.forEach((item, index) => {
+        date = item.date;
+        if (item.time.startsWith(dateString)) {
+          let minIdx = this.hourlyData.hourly.findIndex(item2 => item2.date >= now);
+          // If is not the first day we show weather at 10.00 am
+          if (dateIdx == 0 && index == minIdx || dateIdx != 0 && date.getHours() == 10) {
+            this.mainWeatherIndex = index;
+          }
+        }
+      });
     }
   },
   beforeMount() {
@@ -103,15 +148,32 @@ export default {
           :index="index"
           :measures="dailyData.daily_units"
           @buttonClicked="setWeatherDate"
+          :selectedDateIndex="selectedDateIndex"
         />
       </div>
 
       <div id="weather" class="row">
         <div class="col-12 col-md-8">
-          <MainWeather
-            :backgroundImage="backgroundImageMainWeather"
+          <MainWeather v-if="hourlyData.hourly && mainWeatherIndex >= 0"
+            :data="hourlyData.hourly"
+            :measures="hourlyData.hourly_units"
+            :index="mainWeatherIndex"
           />
         </div>
+
+        <div class="col-12 col-md-4">
+          <DailyInfo v-if="dailyData.daily && selectedDateIndex >= 0"
+            :data="dailyData.daily[selectedDateIndex]"
+            :measures="dailyData.daily_units"
+          />
+        </div>
+      </div>
+
+      <div class="card flex-row flex-nowrap my-5 align-items-stretch glass overflow-x-scroll text-center" id="hourlyWeather">
+        <HourlyWeather v-for="data in hourlyData.hourly"
+          :data="data"
+          :measures="hourlyData.hourly_units"
+        />
       </div>
     </div>
   </main>

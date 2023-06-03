@@ -13,6 +13,10 @@ export default {
       required: true,
       type: Object
     },
+    selectedDateIndex: {
+      required: true,
+      type: Number
+    }
   },
   methods: {
     setWeatherDate() {
@@ -27,7 +31,7 @@ export default {
 <label>
   <input type="radio" class="btn-check" name="btnradio" :id="'btnradio-' + data.date.getDate()" autocomplete="off" @click="setWeatherDate">
   <!-- <input type="radio" class="btn-check" name="btnradio" :id="'btnradio-' + data.date.getDate()" autocomplete="off" :onclick="'setWeatherDate(' + index + ')'"> -->
-  <div class="card d-flex flex-column justify-content-between">
+  <div class="card d-flex flex-column justify-content-between glass text-center h-100" :class="{ selected:  index == selectedDateIndex}">
     <div class="card-body">
       <h5 class="card-title">{{data.temperature_2m_avg + ' ' + measures.apparent_temperature_max}}</h5>
       <img :src="data.svg"/>
@@ -38,12 +42,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import '../assets/main';
 .card {
-		@extend %glass;
-		text-align: center;
 		top: auto;
-		height: 100%;
 
 		&.selected {
 			background: rgba(255, 255, 255, 0.75);
