@@ -16,8 +16,8 @@ defineProps({
 </script>
 
 <template>
-  <div class="card h-100" :style="{backgroundImage: 'url(' + data[index].backgroundSvg + ')'}">
-    <div class="card-body row glass" id="main-weather">
+  <div class="card h-100 glass" :style="{backgroundImage: 'url(' + data[index].backgroundSvg + ')'}">
+    <div class="card-body row" id="main-weather">
       <div class="col-5 text-center d-flex flex-column justify-content-evenly">
         <img :src="data[index].svg">
         <h5 class="card-title">{{data[index].date.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})}}</h5>

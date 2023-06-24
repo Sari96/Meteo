@@ -24,13 +24,11 @@ export default {
     }
   }
 }
-
 </script>
 
 <template>
 <label>
   <input type="radio" class="btn-check" name="btnradio" :id="'btnradio-' + data.date.getDate()" autocomplete="off" @click="setWeatherDate">
-  <!-- <input type="radio" class="btn-check" name="btnradio" :id="'btnradio-' + data.date.getDate()" autocomplete="off" :onclick="'setWeatherDate(' + index + ')'"> -->
   <div class="card d-flex flex-column justify-content-between glass text-center h-100" :class="{ selected:  index == selectedDateIndex}">
     <div class="card-body">
       <h5 class="card-title">{{data.temperature_2m_avg + ' ' + measures.apparent_temperature_max}}</h5>
@@ -57,5 +55,9 @@ export default {
 		.card-title.day {
 			text-transform: capitalize;
 		}
+
+    &:hover {
+      cursor: pointer;
+    }
 }
 </style>

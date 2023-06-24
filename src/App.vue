@@ -3,6 +3,7 @@ import DateButton from './components/DateButton.vue'
 import MainWeather from './components/MainWeather.vue'
 import DailyInfo from './components/DailyInfo.vue'
 import HourlyWeather from './components/HourlyWeather.vue'
+import Search from './components/Search.vue'
 
 export default {
   data() {
@@ -12,6 +13,9 @@ export default {
       hourlyData: {},
       selectedDateIndex: -1,
       mainWeatherIndex: -1,
+      todayHourlyData: {},
+      location: "",
+      appid: "ca0bc81789a77b485742ed7b77c9a1b9",
     };
   },
   components: {
@@ -19,6 +23,7 @@ export default {
     MainWeather,
     DailyInfo,
     HourlyWeather,
+    Search,
   },
   methods: {
     getWeatherImg(code, is_day) {
@@ -45,7 +50,7 @@ export default {
 
     loadCity(lat, lng) {
       this.url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&`;
-      fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&appid=ca0bc81789a77b485742ed7b77c9a1b9&limit=0`)
+      fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&appid=${this.appid}&limit=0`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -118,12 +123,25 @@ export default {
       this.hourlyData.hourly.forEach((item, index) => {
         date = item.date;
         if (item.time.startsWith(dateString)) {
-          let minIdx = this.hourlyData.hourly.findIndex(item2 => item2.date >= now);
+          let minIdx = this.hourlyData.hourly.findIndex(item2 => item2.date.getHours() >= now.getHours());
           // If is not the first day we show weather at 10.00 am
           if (dateIdx == 0 && index == minIdx || dateIdx != 0 && date.getHours() == 10) {
             this.mainWeatherIndex = index;
           }
         }
+      });
+      console.log(this.hourlyData.hourly);
+      console.log(this.mainWeatherIndex);
+      this.todayHourlyData = this.hourlyData.hourly.filter((item, index) => item.time.startsWith(dateString));
+    },
+
+    search(location) {
+      console.log(location);
+      fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=0&appid=${this.appid}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        this.loadCity(data[0].lat, data[0].lon);
       });
     }
   },
@@ -142,6 +160,10 @@ export default {
   <main>
     <div class="container mt-3">
       <h1 class="text-center">{{ cityName }}</h1>
+      <Search
+        @search="search"
+      />
+
       <div id="dateBar" class="my-5 card-group btn-group d-flex justify-content-evenly" role="group" aria-label="Basic radio toggle button group">
         <DateButton v-for="(item, index) in dailyData.daily"
           :data="item"
@@ -170,7 +192,7 @@ export default {
       </div>
 
       <div class="card flex-row flex-nowrap my-5 align-items-stretch glass overflow-x-scroll text-center" id="hourlyWeather">
-        <HourlyWeather v-for="data in hourlyData.hourly"
+        <HourlyWeather v-for="data in todayHourlyData"
           :data="data"
           :measures="hourlyData.hourly_units"
         />
