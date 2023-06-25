@@ -4,6 +4,7 @@ import MainWeather from './components/MainWeather.vue'
 import DailyInfo from './components/DailyInfo.vue'
 import HourlyWeather from './components/HourlyWeather.vue'
 import Search from './components/Search.vue'
+import Chart from './components/Chart.vue'
 
 export default {
   data() {
@@ -24,6 +25,7 @@ export default {
     DailyInfo,
     HourlyWeather,
     Search,
+    Chart,
   },
   methods: {
     getWeatherImg(code, is_day) {
@@ -53,6 +55,7 @@ export default {
       fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&appid=${this.appid}&limit=0`)
       .then((response) => response.json())
       .then((data) => {
+        console.log("City data from API:");
         console.log(data);
         this.cityName = data[0].name;
         this.loadDailyData();
@@ -61,7 +64,6 @@ export default {
 
     loadDailyData() {
       const dailyUrl = this.url + 'timezone=auto&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,weathercode,sunrise,sunset';
-      console.log(dailyUrl);
       fetch(dailyUrl)
       .then((response) => response.json())
       .then((data) => {
@@ -86,7 +88,6 @@ export default {
 
     loadHourlyData() {
       const hourlyUrl = this.url + 'hourly=temperature_2m,relativehumidity_2m,apparent_temperature,windspeed_10m,winddirection_10m,precipitation,precipitation_probability,weathercode,is_day';
-      console.log(hourlyUrl);
       fetch(hourlyUrl)
         .then((response) => response.json())
         .then((data) => {
@@ -108,6 +109,7 @@ export default {
           }));
           data.hourly = tmp;
           this.hourlyData = data;
+          console.log("Hourly Data:");
           console.log(data);
           this.setWeatherDate(0);
       });
@@ -130,24 +132,20 @@ export default {
           }
         }
       });
-      console.log(this.hourlyData.hourly);
-      console.log(this.mainWeatherIndex);
       this.todayHourlyData = this.hourlyData.hourly.filter((item, index) => item.time.startsWith(dateString));
     },
 
     search(location) {
-      console.log(location);
       fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=0&appid=${this.appid}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         this.loadCity(data[0].lat, data[0].lon);
       });
     }
   },
   beforeMount() {
     navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position)
+        // console.log(position);
         let lat = position.coords.latitude;
         let lng = position.coords.longitude;
         this.loadCity(lat, lng);
@@ -191,7 +189,46 @@ export default {
         </div>
       </div>
 
-      <div class="card flex-row flex-nowrap my-5 align-items-stretch glass overflow-x-scroll text-center" id="hourlyWeather">
+      <div class="row my-5">
+        <div class="col-12 col-md-6">
+          <Chart v-if="todayHourlyData.length > 0"
+            :series="[
+              {
+                name: 'Temperatura percepita',
+                data: todayHourlyData.map(item => item.apparent_temperature)
+              },
+              {
+                name: 'Temperatura effettiva',
+                data: todayHourlyData.map(item => item.temperature_2m)
+              }
+            ]"
+
+            :categories="todayHourlyData.map(item => item.date.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}))"
+            :title="'Temperatura'"
+            :unit="hourlyData.hourly_units.temperature_2m"
+            />
+        </div>
+        <div class="col-12 col-md-6">
+          <Chart v-if="todayHourlyData.length > 0"
+            :series="[
+              {
+                name: 'Probabilità precipitazioni',
+                data: todayHourlyData.map(item => item.precipitation_probability)
+              },
+              {
+                name: 'Umidità',
+                data: todayHourlyData.map(item => item.relativehumidity_2m)
+              }
+            ]"
+
+            :categories="todayHourlyData.map(item => item.date.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}))"
+            :title="'Umidità e precipitazioni'"
+            :unit="hourlyData.hourly_units.relativehumidity_2m"
+            />
+        </div>
+      </div>
+
+      <div class="card flex-row flex-nowrap mb-5 align-items-stretch glass overflow-x-scroll text-center pb-2" id="hourlyWeather">
         <HourlyWeather v-for="data in todayHourlyData"
           :data="data"
           :measures="hourlyData.hourly_units"
@@ -203,3 +240,4 @@ export default {
 
 <style scoped>
 </style>
+

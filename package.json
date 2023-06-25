@@ -21,9 +21,11 @@
 	},
 	"homepage": "https://github.com/Sari96/Meteo#readme",
 	"dependencies": {
+		"apexcharts": "^3.41.0",
 		"bootstrap": "^5.3.0",
 		"gh-pages": "^5.0.0",
-		"vue": "^3.3.2"
+		"vue": "^3.3.2",
+		"vue3-apexcharts": "^1.4.1"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^4.2.3",
