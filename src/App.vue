@@ -173,7 +173,7 @@ export default {
       </div>
 
       <div id="weather" class="row">
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-lg-8 mb-5 mb-lg-0">
           <MainWeather v-if="hourlyData.hourly && mainWeatherIndex >= 0"
             :data="hourlyData.hourly"
             :measures="hourlyData.hourly_units"
@@ -181,7 +181,7 @@ export default {
           />
         </div>
 
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-lg-4">
           <DailyInfo v-if="dailyData.daily && selectedDateIndex >= 0"
             :data="dailyData.daily[selectedDateIndex]"
             :measures="dailyData.daily_units"
@@ -190,7 +190,7 @@ export default {
       </div>
 
       <div class="row my-5">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-lg-6 mb-5 mb-lg-0">
           <Chart v-if="todayHourlyData.length > 0"
             :series="[
               {
@@ -208,7 +208,7 @@ export default {
             :unit="hourlyData.hourly_units.temperature_2m"
             />
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-lg-6">
           <Chart v-if="todayHourlyData.length > 0"
             :series="[
               {
