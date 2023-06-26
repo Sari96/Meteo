@@ -21,6 +21,7 @@
   "homepage": "https://github.com/Sari96/Meteo#readme",
   "dependencies": {
     "gh-pages": "^5.0.0",
+    "lightningcss-darwin-x64": "^1.21.1",
     "parcel": "^2.8.3"
   },
   "devDependencies": {
