@@ -123,9 +123,11 @@ export default {
       const dateString = this.dailyData.daily[dateIdx].date.toLocaleDateString('it-IT', {year: "numeric"}) + "-" + this.dailyData.daily[dateIdx].date.toLocaleDateString('it-IT', {month: "2-digit"}) + "-" + this.dailyData.daily[dateIdx].date.toLocaleDateString('it-IT', {day: "2-digit"});
       this.hourlyData.hourly.forEach((item, index) => {
         date = item.date;
+        // Considero solo gli elementi del meteo orario per il giorno che sto visualizzando
         if (item.time.startsWith(dateString)) {
           let minIdx = this.hourlyData.hourly.findIndex(item2 => item2.date.getHours() >= now.getHours());
-          // If is not the first day we show weather at 10.00 am
+          // Se sto visualizzando il giorno corrente mostro il meteo all'orario corrente
+          // altrimenti mostro il meteo alle 10
           if (dateIdx == 0 && index == minIdx || dateIdx != 0 && date.getHours() == 10) {
             this.mainWeatherIndex = index;
           }
@@ -157,11 +159,14 @@ export default {
   <main>
     <div class="container mt-3">
       <h1 class="text-center">{{ cityName }}</h1>
+      <!-- Quando il componente figlio emette l'evento search verrà richiamata la funzione search -->
       <Search
         @search="search"
       />
 
       <div id="dateBar" class="my-5 card-group btn-group d-flex justify-content-evenly" role="group" aria-label="Basic radio toggle button group">
+        <!-- Quando il componente figlio emette l'evento buttonClicked verrà richiamata la funzione setWeatherDate -->
+        <!-- Con v-for richiamo tante volte il componente DateButton, una per ogni data presente in dailyData -->
         <DateButton v-for="(item, index) in dailyData.daily"
           :data="item"
           :index="index"
@@ -173,6 +178,7 @@ export default {
 
       <div id="weather" class="row">
         <div class="col-12 col-lg-8 mb-5 mb-lg-0">
+          <!-- Mostro il componente MainWeather solo se hourlyData contiene i dati della API e se ho l'indice dell'orario da mostrare -->
           <MainWeather v-if="hourlyData.hourly && mainWeatherIndex >= 0"
             :data="hourlyData.hourly"
             :measures="hourlyData.hourly_units"
@@ -181,6 +187,7 @@ export default {
         </div>
 
         <div class="col-12 col-lg-4">
+          <!-- Mostro il componente MainWeather solo se dailyData contiene i dati della API e se ho l'indice dell'orario da mostrare -->
           <DailyInfo v-if="dailyData.daily && selectedDateIndex >= 0"
             :data="dailyData.daily[selectedDateIndex]"
             :measures="dailyData.daily_units"
