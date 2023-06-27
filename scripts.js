@@ -1,15 +1,13 @@
 let dailyValues, hourlyValues;
-let url;
 let dateIndex;
 
 const loadCity = (lat, lng) => {
-  url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&`;
   fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&appid=ca0bc81789a77b485742ed7b77c9a1b9&limit=0`)
   .then((response) => response.json())
   .then((data) => {
     $("h1").append(data[0].name);
-    loadHourlyData();
-    loadDailyData();
+    loadHourlyData(lat, lng);
+    loadDailyData(lat, lng);
   });
 }
 
@@ -34,7 +32,7 @@ const getWeatherImg = (code, is_day) => {
 }
 
 const loadDailyData = (lat, lng) => {
-  const dailyUrl = url + 'timezone=auto&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,weathercode,sunrise,sunset';
+  const dailyUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&timezone=auto&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,weathercode,sunrise,sunset`;
   console.log(dailyUrl);
   fetch(dailyUrl)
   .then((response) => response.json())
@@ -55,13 +53,6 @@ const loadDailyData = (lat, lng) => {
             <h5 class="card-title day">${date.toLocaleDateString('it-IT', {weekday: 'short'})}</h5>
           </div>
         </div>
-
-        <!-- <img src="..." class="card-img-top" alt="...">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>-->
       </label>`);
     });
     loadHourlyData(lat, lng);
@@ -69,7 +60,7 @@ const loadDailyData = (lat, lng) => {
 }
 
 const loadHourlyData = (lat,lng) => {
-  const hourlyUrl = url + 'hourly=temperature_2m,relativehumidity_2m,apparent_temperature,windspeed_10m,winddirection_10m,precipitation,precipitation_probability,weathercode,is_day';
+  const hourlyUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,windspeed_10m,winddirection_10m,precipitation,precipitation_probability,weathercode,is_day`;
   console.log(hourlyUrl);
   fetch(hourlyUrl)
   .then((response) => response.json())
