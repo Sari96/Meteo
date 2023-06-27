@@ -51,19 +51,18 @@ export default {
     },
 
     loadCity(lat, lng) {
-      this.url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&`;
       fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&appid=${this.appid}&limit=0`)
       .then((response) => response.json())
       .then((data) => {
         console.log("City data from API:");
         console.log(data);
         this.cityName = data[0].name;
-        this.loadDailyData();
+        this.loadDailyData(lat, lng);
       });
     },
 
-    loadDailyData() {
-      const dailyUrl = this.url + 'timezone=auto&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,weathercode,sunrise,sunset';
+    loadDailyData(lat, lng) {
+      const dailyUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&timezone=auto&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,weathercode,sunrise,sunset`;
       fetch(dailyUrl)
       .then((response) => response.json())
       .then((data) => {
@@ -82,12 +81,12 @@ export default {
         }));
         data.daily = tmp;
         this.dailyData = data;
-        this.loadHourlyData();
+        this.loadHourlyData(lat, lng);
       });
     },
 
-    loadHourlyData() {
-      const hourlyUrl = this.url + 'hourly=temperature_2m,relativehumidity_2m,apparent_temperature,windspeed_10m,winddirection_10m,precipitation,precipitation_probability,weathercode,is_day';
+    loadHourlyData(lat, lng) {
+      const hourlyUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&timezone=auto&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,windspeed_10m,winddirection_10m,precipitation,precipitation_probability,weathercode,is_day`;
       fetch(hourlyUrl)
         .then((response) => response.json())
         .then((data) => {
