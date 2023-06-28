@@ -28,14 +28,14 @@ defineProps({
         <p class="card-text fs-3">{{data[index].date.toLocaleDateString('it-IT', {day: 'numeric', month: "long", year: "numeric"})}}</p>
         <div class="row">
           <div class="col-2">
-            <img src="images/humidity.svg" class="d-block">
+            <img :src="'images/humidity.svg'" class="d-block">
           </div>
           <div class="col-4">
             <h5 class="card-title">Umidità</h5>
             <p class="card-text">{{data[index].relativehumidity_2m + " " + measures.relativehumidity_2m}}</p>
           </div>
           <div class="col-2">
-            <img src="images/wind.svg" class="d-block">
+            <img :src="'images/wind.svg'" class="d-block">
           </div>
           <div class="col-4">
             <h5 class="card-title">Vento</h5>
